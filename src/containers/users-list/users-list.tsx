@@ -66,6 +66,12 @@ export const UsersListComp: FC<UsersListCompPropTypes> = ({ getUsers, setBookmar
 
   const setBookMarks = useCallback(() => {
     setOpenConfirmDialog(false);
+
+    if (Object.keys(selectedIds).length > 5) {
+      setSelectedIds(selectedIds.slice(0, selectedIds.length - 1));
+      return;
+    }
+
     const bookMarkedUsers = selectedIds.reduce<{ [key: string]: UserListItemTypes }>(
       (acc, curr) => {
         acc[curr] = users[curr];
@@ -73,9 +79,8 @@ export const UsersListComp: FC<UsersListCompPropTypes> = ({ getUsers, setBookmar
       },
       {}
     );
-    unstable_batchedUpdates(() => {
-      setBookmarkedUsers(bookMarkedUsers);
-    });
+
+    setBookmarkedUsers(bookMarkedUsers);
   }, [setBookmarkedUsers, selectedIds, users]);
 
   const selectChangeHandler = useCallback((ids: Array<number | string>) => {
