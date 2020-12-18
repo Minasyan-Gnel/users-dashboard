@@ -4,11 +4,11 @@ import { Form, Field, FieldRenderProps } from 'react-final-form';
 import { connect, useSelector } from 'react-redux';
 import { Button, makeStyles, ButtonGroup } from '@material-ui/core';
 
-import { userDataForEdit } from '../../selectors';
+import { userEditSelector } from '../../selectors';
 import { StyledInput } from '../../shared/styled-input/styled-input';
 import { StyledSelect } from '../../shared/styled-select/styled-select';
 import { updateUserDataAction } from '../../actions/sync';
-import { UserEditDataModel } from '../../models';
+import { UserEditModel } from '../../models';
 
 const countries = [
   {
@@ -30,7 +30,7 @@ const countries = [
 ];
 
 type UserEditProfileCompPropTypes = {
-  updateUserData(data: UserEditDataModel): void;
+  updateUserData(data: UserEditModel): void;
 };
 
 export const UserEditProfileComp: FC<UserEditProfileCompPropTypes> = ({ updateUserData }) => {
@@ -39,7 +39,7 @@ export const UserEditProfileComp: FC<UserEditProfileCompPropTypes> = ({ updateUs
 
   const buttonsGroupClasses = useButtonsGroupStyles();
 
-  const userEditData = useSelector(userDataForEdit);
+  const userEditData = useSelector(userEditSelector);
 
   const renderFieldItem = useCallback(
     ({ input, label, select = false, index }) =>
@@ -89,7 +89,7 @@ export const UserEditProfileComp: FC<UserEditProfileCompPropTypes> = ({ updateUs
   );
 
   const submitHandler = useCallback(
-    (data: UserEditDataModel) => {
+    (data: UserEditModel) => {
       updateUserData(data);
     },
     [updateUserData]
@@ -177,7 +177,7 @@ export const UserEditProfileComp: FC<UserEditProfileCompPropTypes> = ({ updateUs
 };
 
 const mapDispatch = (dispatch) => ({
-  updateUserData: (data: UserEditDataModel) => dispatch(updateUserDataAction(data)),
+  updateUserData: (data: UserEditModel) => dispatch(updateUserDataAction(data)),
 });
 
 export const UserEditProfile = connect(null, mapDispatch)(UserEditProfileComp);

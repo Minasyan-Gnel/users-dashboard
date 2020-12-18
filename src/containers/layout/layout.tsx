@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 
 import { UserProfile } from '../user-profile/user-profile';
 import { Dashboard } from '../../components/dashboard/dashboard';
-import { UsersList } from '../../components/users-list/users-list';
+import { UsersList } from '../users-list/users-list';
 import { NavigationBar } from '../../components/navigation-bar/navigation-bar';
 import { RouterEnum } from '../../types/enums';
 

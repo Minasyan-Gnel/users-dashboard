@@ -9,6 +9,7 @@ type ItemTypes = {
 type StyledSelectPropTypes = {
   label: string;
   items: ItemTypes[];
+  onChange?(i: any): void;
   value?: string;
 };
 

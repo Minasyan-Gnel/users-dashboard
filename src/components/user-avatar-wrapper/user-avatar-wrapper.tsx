@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import { css } from '@emotion/css';
 import { useSelector } from 'react-redux';
 
-import { userInfo } from '../../selectors';
+import { userInfoSelector } from '../../selectors';
 
 export const UserAvatarWrapper: FC = () => {
   const { firstName = 'Full', lastName = 'name', gender = 'gender', avatar } = useSelector(
-    userInfo
+    userInfoSelector
   );
 
   return (

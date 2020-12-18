@@ -1,3 +1,3 @@
 export * from './UserModel';
-export * from './UserEditDataModel';
+export * from './UserEditModel';
 export * from './UserResponseModel';

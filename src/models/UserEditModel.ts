@@ -1,4 +1,4 @@
-export interface UserEditDataModel {
+export interface UserEditModel {
   firstName: string;
   lastName: string;
   address: string;

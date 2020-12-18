@@ -1,11 +1,13 @@
 import { Middleware } from 'redux';
-import { SET_USER_DATA } from '../actions/types';
+import { SET_USER_DATA, SET_USERS_DATA } from '../actions/types';
 import { UserResponseModel, UserModel } from '../models';
 
 const convertUserData = (data: UserResponseModel): UserModel => {
   const { name, location, email, phone, picture, gender } = data;
   return {
     gender,
+    location,
+    id: email,
     avatar: picture.medium,
     fullName: `${name.first} ${name.last}`,
     firstName: name.first,
@@ -25,6 +27,17 @@ export const UsersMiddleware: Middleware = () => (next) => (action) => {
       next({
         ...action,
         payload: convertUserData(payload),
+      });
+      break;
+    }
+    case SET_USERS_DATA: {
+      const { payload } = action;
+      next({
+        ...action,
+        payload: payload.reduce((acc, curr: UserResponseModel) => {
+          acc[curr.email] = convertUserData(curr);
+          return acc;
+        }, {}),
       });
       break;
     }

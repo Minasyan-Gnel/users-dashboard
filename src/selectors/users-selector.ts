@@ -1,15 +1,9 @@
 import { createSelector } from 'reselect';
-import { UserEditDataModel, UserModel } from '../models';
+import { UserEditModel, UserModel } from '../models';
 import { RootReducerStateTypes } from '../reducers';
+import { UserListItemTypes, UserProfileTypes } from './types';
 
-type UserProfileTypes = {
-  firstName?: string;
-  lastName?: string;
-  gender?: string;
-  avatar?: string;
-};
-
-export const userInfo = createSelector<
+export const userInfoSelector = createSelector<
   RootReducerStateTypes,
   UserModel | undefined,
   UserProfileTypes
@@ -28,10 +22,10 @@ export const userInfo = createSelector<
   }
 );
 
-export const userDataForEdit = createSelector<
+export const userEditSelector = createSelector<
   RootReducerStateTypes,
   UserModel | undefined,
-  UserEditDataModel | undefined
+  UserEditModel | undefined
 >(
   (state) => state.usersData.currentUser,
   (currUser) => {
@@ -47,4 +41,35 @@ export const userDataForEdit = createSelector<
       };
     }
   }
+);
+
+export const usersListSelector = createSelector<
+  RootReducerStateTypes,
+  { [key: string]: UserModel },
+  { [key: string]: UserListItemTypes }
+>(
+  (state) => state.usersData.users,
+  (users) =>
+    Object.keys(users).reduce((acc, curr) => {
+      acc[curr] = {
+        id: users[curr].id,
+        gender: users[curr].gender,
+        avatar: users[curr].avatar,
+        fullName: users[curr].fullName,
+        address: users[curr].address,
+        city: users[curr].city,
+        location: JSON.stringify(users[curr].location),
+        email: users[curr].emails[0],
+      };
+      return acc;
+    }, {})
+);
+
+export const bookMarkedUsersSelector = createSelector<
+  RootReducerStateTypes,
+  { [key: string]: UserListItemTypes },
+  { [key: string]: UserListItemTypes }
+>(
+  (state) => state.usersData.bookmarkUsers,
+  (bookMarkedUsers) => bookMarkedUsers
 );
