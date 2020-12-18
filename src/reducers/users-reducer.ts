@@ -2,6 +2,7 @@ import { Reducer } from 'redux';
 
 import {
   SET_BOOKMARKED_USERS,
+  SET_DASHBOARD_USERS_DATA,
   SET_USER_DATA,
   SET_USERS_DATA,
   UPDATE_USER_DATA,
@@ -17,11 +18,15 @@ type UsersReducerStateType = {
   bookmarkUsers: {
     [key: string]: UserListItemTypes;
   };
+  dashboardUsers: {
+    [key: string]: number;
+  };
 };
 
 const initialState = {
   users: {},
   bookmarkUsers: {},
+  dashboardUsers: {},
 };
 
 export const UsersReducer: Reducer<UsersReducerStateType> = (state = initialState, action) => {
@@ -48,6 +53,11 @@ export const UsersReducer: Reducer<UsersReducerStateType> = (state = initialStat
       return {
         ...state,
         bookmarkUsers: action.payload,
+      };
+    case SET_DASHBOARD_USERS_DATA:
+      return {
+        ...state,
+        dashboardUsers: action.payload,
       };
     default:
       return state;

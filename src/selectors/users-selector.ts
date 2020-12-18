@@ -73,3 +73,12 @@ export const bookMarkedUsersSelector = createSelector<
   (state) => state.usersData.bookmarkUsers,
   (bookMarkedUsers) => bookMarkedUsers
 );
+
+export const dashboardUsersSelector = createSelector<
+  RootReducerStateTypes,
+  { [key: string]: number },
+  { [key: string]: number }
+>(
+  (state) => state.usersData.dashboardUsers,
+  (dashboardUsers) => dashboardUsers
+);

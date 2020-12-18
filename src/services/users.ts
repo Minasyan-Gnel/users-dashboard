@@ -19,7 +19,7 @@ class UserService {
   }: UsersListOptionTypes): Promise<[UserResponseModel[] | null, Error | null]> => {
     try {
       const { results } = await Api.get<{ results: UserResponseModel[] }>(
-        `/?results=${limit}&page=${page}&gender=${gender}&seed=abc`
+        `/?results=${limit}&page=${page}&gender=${gender}`
       );
       return [results, null];
     } catch (err) {

@@ -1,5 +1,5 @@
 import { Middleware } from 'redux';
-import { SET_USER_DATA, SET_USERS_DATA } from '../actions/types';
+import { SET_DASHBOARD_USERS_DATA, SET_USER_DATA, SET_USERS_DATA } from '../actions/types';
 import { UserResponseModel, UserModel } from '../models';
 
 const convertUserData = (data: UserResponseModel): UserModel => {
@@ -20,6 +20,17 @@ const convertUserData = (data: UserResponseModel): UserModel => {
   };
 };
 
+const calculateDashboardData = (data: UserResponseModel[]) => {
+  return data.reduce((acc, curr) => {
+    const date = new Date(curr.registered.date);
+    const month = date.getMonth() + 1;
+
+    acc[month] = acc[month] + 1 || 1;
+
+    return acc;
+  }, {});
+};
+
 export const UsersMiddleware: Middleware = () => (next) => (action) => {
   switch (action.type) {
     case SET_USER_DATA: {
@@ -38,6 +49,14 @@ export const UsersMiddleware: Middleware = () => (next) => (action) => {
           acc[curr.email] = convertUserData(curr);
           return acc;
         }, {}),
+      });
+      break;
+    }
+    case SET_DASHBOARD_USERS_DATA: {
+      const { payload } = action;
+      next({
+        ...action,
+        payload: calculateDashboardData(payload),
       });
       break;
     }

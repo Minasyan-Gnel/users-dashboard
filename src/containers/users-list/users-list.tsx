@@ -17,6 +17,8 @@ import { UsersListOptionTypes } from '../../types';
 import { setBookmarkedUsersAction } from '../../actions/sync';
 import { UserListItemTypes } from '../../selectors/types';
 import { unstable_batchedUpdates } from 'react-dom';
+import { StyledConfirmDialog } from '../../shared/styled-confirm-dialog/styled-confirm-dialog';
+import { StyledLoader } from '../../shared/styled-loader/styled-loader';
 
 const columns = [
   { name: 'email', title: 'Email' },
@@ -41,6 +43,7 @@ export const UsersListComp: FC<UsersListCompPropTypes> = ({ getUsers, setBookmar
   });
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<Array<number | string>>([]);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 
   const users = useSelector(usersListSelector);
   const bookMarkedUsers = useSelector(bookMarkedUsersSelector);
@@ -61,23 +64,33 @@ export const UsersListComp: FC<UsersListCompPropTypes> = ({ getUsers, setBookmar
     setOptions((options) => ({ ...options, limit }));
   }, []);
 
-  const setBookMarks = useCallback(
-    (ids: Array<number | string>) => {
-      const bookMarkedUsers = ids.reduce<{ [key: string]: UserListItemTypes }>((acc, curr) => {
+  const setBookMarks = useCallback(() => {
+    setOpenConfirmDialog(false);
+    const bookMarkedUsers = selectedIds.reduce<{ [key: string]: UserListItemTypes }>(
+      (acc, curr) => {
         acc[curr] = users[curr];
         return acc;
-      }, {});
-      unstable_batchedUpdates(() => {
-        setBookmarkedUsers(bookMarkedUsers);
-        setSelectedIds(ids);
-      });
-    },
-    [setBookmarkedUsers, setSelectedIds, users]
-  );
+      },
+      {}
+    );
+    unstable_batchedUpdates(() => {
+      setBookmarkedUsers(bookMarkedUsers);
+    });
+  }, [setBookmarkedUsers, selectedIds, users]);
+
+  const selectChangeHandler = useCallback((ids: Array<number | string>) => {
+    setSelectedIds(ids);
+    setOpenConfirmDialog(true);
+  }, []);
 
   const bookMarksChangeHandler = useCallback((e) => {
     setIsBookmarked(e.target.checked);
   }, []);
+
+  const confirmCancelHandler = useCallback(() => {
+    setSelectedIds(selectedIds.slice(0, selectedIds.length - 1));
+    setOpenConfirmDialog(false);
+  }, [selectedIds]);
 
   const finalBookmarkedUsers = useMemo(
     () =>
@@ -113,7 +126,7 @@ export const UsersListComp: FC<UsersListCompPropTypes> = ({ getUsers, setBookmar
         columns={columns}
         getRowId={(row) => row.id}
       >
-        <SelectionState selection={selectedIds} onSelectionChange={setBookMarks} />
+        <SelectionState selection={selectedIds} onSelectionChange={selectChangeHandler} />
         <PagingState
           defaultCurrentPage={0}
           defaultPageSize={50}
@@ -126,6 +139,13 @@ export const UsersListComp: FC<UsersListCompPropTypes> = ({ getUsers, setBookmar
         <TableSelection />
         <PagingPanel pageSizes={[50, 100, 150, 0]} />
       </Grid>
+      <StyledConfirmDialog
+        open={openConfirmDialog}
+        description="Are you sure you want to add to bookmarks?"
+        onConfirm={setBookMarks}
+        onClose={confirmCancelHandler}
+      />
+      <StyledLoader open={!finalUsers.length} />
     </Paper>
   );
 };

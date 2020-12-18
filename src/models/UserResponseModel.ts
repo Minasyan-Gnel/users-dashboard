@@ -21,4 +21,7 @@ export interface UserResponseModel {
     medium: string;
     thumbnail: string;
   };
+  registered: {
+    date: string;
+  };
 }
